@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.env
+.env.local
+data/*.db
+public/memes/*.png
+public/memes/*.jpg
+!public/memes/.gitkeep
+.DS_Store
