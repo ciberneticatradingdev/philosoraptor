@@ -1,4 +1,6 @@
-import Database from 'better-sqlite3';
+// Uses Node.js built-in sqlite module (stable in Node 22.5+ / Node 25+)
+// No native compilation required.
+import { DatabaseSync } from 'node:sqlite';
 import path from 'path';
 import fs from 'fs';
 import type { Thought, PaginatedThoughts } from '@/types';
@@ -6,23 +8,17 @@ import type { Thought, PaginatedThoughts } from '@/types';
 const DB_DIR = path.join(process.cwd(), 'data');
 const DB_PATH = path.join(DB_DIR, 'thoughts.db');
 
-let _db: Database.Database | null = null;
+let _db: DatabaseSync | null = null;
 
-function getDb(): Database.Database {
+function getDb(): DatabaseSync {
   if (_db) return _db;
 
-  // Ensure data directory exists
   if (!fs.existsSync(DB_DIR)) {
     fs.mkdirSync(DB_DIR, { recursive: true });
   }
 
-  _db = new Database(DB_PATH);
+  _db = new DatabaseSync(DB_PATH);
 
-  // Enable WAL mode for better concurrent read performance
-  _db.pragma('journal_mode = WAL');
-  _db.pragma('foreign_keys = ON');
-
-  // Create tables
   _db.exec(`
     CREATE TABLE IF NOT EXISTS thoughts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,8 +38,10 @@ function getDb(): Database.Database {
 
 export function getLatestCycleNumber(): number {
   const db = getDb();
-  const row = db.prepare('SELECT MAX(cycle_number) as max_cycle FROM thoughts').get() as { max_cycle: number | null };
-  return row.max_cycle ?? 0;
+  const row = db.prepare('SELECT MAX(cycle_number) as max_cycle FROM thoughts').get() as unknown as
+    | { max_cycle: number | null }
+    | undefined;
+  return row?.max_cycle ?? 0;
 }
 
 export function insertThought(data: {
@@ -58,17 +56,19 @@ export function insertThought(data: {
     VALUES (?, ?, ?, ?, datetime('now'))
   `);
   const result = stmt.run(data.cycle_number, data.content, data.meme_phrase, data.meme_image_path);
-  return getThoughtById(result.lastInsertRowid as number)!;
+  return getThoughtById(Number(result.lastInsertRowid))!;
 }
 
 export function getThoughtById(id: number): Thought | null {
   const db = getDb();
-  return db.prepare('SELECT * FROM thoughts WHERE id = ?').get(id) as Thought | null;
+  const row = db.prepare('SELECT * FROM thoughts WHERE id = ?').get(id);
+  return (row as unknown as Thought) ?? null;
 }
 
 export function getLatestThought(): Thought | null {
   const db = getDb();
-  return db.prepare('SELECT * FROM thoughts ORDER BY created_at DESC LIMIT 1').get() as Thought | null;
+  const row = db.prepare('SELECT * FROM thoughts ORDER BY created_at DESC LIMIT 1').get();
+  return (row as unknown as Thought) ?? null;
 }
 
 export function getThoughtsPaginated(page: number = 1, limit: number = 10): PaginatedThoughts {
@@ -77,9 +77,9 @@ export function getThoughtsPaginated(page: number = 1, limit: number = 10): Pagi
 
   const thoughts = db
     .prepare('SELECT * FROM thoughts ORDER BY created_at DESC LIMIT ? OFFSET ?')
-    .all(limit, offset) as Thought[];
+    .all(limit, offset) as unknown as Thought[];
 
-  const totalRow = db.prepare('SELECT COUNT(*) as count FROM thoughts').get() as { count: number };
+  const totalRow = db.prepare('SELECT COUNT(*) as count FROM thoughts').get() as unknown as { count: number };
   const total = totalRow.count;
 
   return {
