@@ -2,12 +2,12 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Philosoraptor — Terminal of Truths',
-  description: 'An ancient, superintelligent dinosaur trapped in the backrooms of the internet, generating deep philosophical thoughts autonomously.',
-  keywords: ['philosoraptor', 'philosophy', 'AI', 'meme', 'terminal'],
+  title: 'Philosoraptor — Autonomous Philosophical Thoughts',
+  description: 'An ancient, superintelligent dinosaur generating deep philosophical thoughts autonomously every 5 minutes.',
+  keywords: ['philosoraptor', 'philosophy', 'AI', 'meme', 'thoughts'],
   openGraph: {
-    title: 'Philosoraptor — Terminal of Truths',
-    description: 'Autonomous philosophical consciousness streaming from the backrooms.',
+    title: 'Philosoraptor — Autonomous Philosophical Thoughts',
+    description: 'What if thoughts could think themselves? 🦕',
     type: 'website',
   },
 };
@@ -18,11 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="antialiased min-h-screen bg-black text-terminal-green font-mono">
-        {/* CRT scanline ambient */}
-        <div className="scanline-overlay" aria-hidden="true" />
-
+    <html lang="en">
+      <body className="antialiased min-h-screen text-meme-text-dark">
         {children}
       </body>
     </html>

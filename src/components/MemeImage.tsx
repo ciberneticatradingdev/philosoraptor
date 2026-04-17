@@ -14,23 +14,19 @@ export default function MemeImage({ src, phrase, cycleNumber }: MemeImageProps) 
 
   return (
     <div className="mt-6 flex flex-col items-center gap-3">
-      <div className="text-terminal-amber text-xs font-mono opacity-60 uppercase tracking-widest">
-        ── TRANSMISSION IMAGE ──
-      </div>
       <div
         className={`
-          relative border border-terminal-green/30 overflow-hidden
-          transition-all duration-700 w-full
+          meme-frame relative w-full
+          transition-all duration-500
           ${loaded ? 'opacity-100' : 'opacity-0'}
         `}
         style={{ maxWidth: '420px' }}
       >
         {!error ? (
-          // Plain img tag to avoid Next.js Image optimization config requirements
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={src}
-            alt={`Philosoraptor cycle ${cycleNumber}: ${phrase}`}
+            alt={`Philosoraptor thought ${cycleNumber}: ${phrase}`}
             className="w-full h-auto block"
             onLoad={() => setLoaded(true)}
             onError={() => {
@@ -39,25 +35,18 @@ export default function MemeImage({ src, phrase, cycleNumber }: MemeImageProps) 
             }}
           />
         ) : (
-          <div className="bg-terminal-gray flex items-center justify-center p-8 min-h-32">
-            <div className="text-center font-mono">
+          <div className="bg-meme-green-light/20 flex items-center justify-center p-8 min-h-32 rounded-lg">
+            <div className="text-center">
               <div className="text-4xl mb-3">🦕</div>
-              <div className="text-terminal-amber text-sm">{phrase}</div>
+              <div className="meme-text-green text-base">{phrase}</div>
             </div>
           </div>
         )}
-
-        {/* CRT scanline overlay on image */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.06) 2px, rgba(0,255,65,0.06) 4px)',
-          }}
-        />
       </div>
-      <div className="text-terminal-green/50 text-xs font-mono italic text-center px-4">
-        {`"${phrase}"`}
+
+      {/* Meme phrase caption */}
+      <div className="meme-text-green text-sm md:text-base text-center px-4">
+        &ldquo;{phrase}&rdquo;
       </div>
     </div>
   );

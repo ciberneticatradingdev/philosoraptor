@@ -45,7 +45,7 @@ export default function TypewriterText({
     <span className={className}>
       {displayed}
       {!done && (
-        <span className="inline-block w-2 h-4 bg-terminal-green animate-cursor-blink ml-0.5 align-middle" />
+        <span className="inline-block w-2 h-5 bg-meme-green-mid animate-cursor-blink ml-0.5 align-middle rounded-sm" />
       )}
     </span>
   );

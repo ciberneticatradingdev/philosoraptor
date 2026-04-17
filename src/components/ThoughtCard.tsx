@@ -3,7 +3,6 @@
 import { useRef, useEffect, useState } from 'react';
 import type { Thought } from '@/types';
 import TypewriterText from './TypewriterText';
-import GlitchText from './GlitchText';
 import MemeImage from './MemeImage';
 
 interface ThoughtCardProps {
@@ -14,8 +13,28 @@ interface ThoughtCardProps {
 function formatTimestamp(cycleNumber: number, createdAt: string): string {
   const padded = String(cycleNumber).padStart(4, '0');
   const date = new Date(createdAt + (createdAt.endsWith('Z') ? '' : 'Z'));
-  const iso = date.toISOString();
-  return `[CYCLE_${padded} // ${iso}]`;
+  const timeStr = date.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+  return `Thought #${padded} · ${timeStr}`;
+}
+
+function timeAgo(createdAt: string): string {
+  const date = new Date(createdAt + (createdAt.endsWith('Z') ? '' : 'Z'));
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+
+  if (diffMin < 1) return 'just now';
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDay = Math.floor(diffHr / 24);
+  return `${diffDay}d ago`;
 }
 
 export default function ThoughtCard({ thought, isLatest = false }: ThoughtCardProps) {
@@ -42,48 +61,50 @@ export default function ThoughtCard({ thought, isLatest = false }: ThoughtCardPr
   }, [isLatest]);
 
   const timestamp = formatTimestamp(thought.cycle_number, thought.created_at);
+  const ago = timeAgo(thought.created_at);
 
   return (
     <div
       ref={cardRef}
       className={`
-        border border-terminal-green/20 bg-black/80 p-6 md:p-8
-        transition-all duration-700
+        thought-card
+        bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-8
+        border transition-all duration-700
         ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-        ${isLatest ? 'border-terminal-green/50 shadow-[0_0_20px_rgba(0,255,65,0.1)]' : ''}
-        relative overflow-hidden
+        ${isLatest
+          ? 'border-meme-green-mid shadow-lg ring-2 ring-meme-green-light/30'
+          : 'border-meme-green-light/30 shadow-sm'
+        }
       `}
     >
-      {/* Corner decorations */}
-      <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-terminal-green/60" />
-      <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-terminal-green/60" />
-      <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-terminal-green/60" />
-      <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-terminal-green/60" />
-
-      {/* Timestamp */}
-      <div className="mb-4">
-        <GlitchText
-          text={timestamp}
-          className={`text-xs md:text-sm font-mono ${isLatest ? 'text-terminal-amber animate-pulse-glow' : 'text-terminal-green/60'}`}
-          glitchChance={isLatest ? 0.03 : 0.005}
-        />
-        {isLatest && (
-          <span className="ml-3 text-xs font-mono text-terminal-red animate-cursor-blink uppercase tracking-widest">
-            ● LIVE
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">🦕</span>
+          <span className="text-sm font-semibold text-meme-green-dark">
+            {timestamp}
           </span>
-        )}
+        </div>
+        <div className="flex items-center gap-2">
+          {isLatest && (
+            <span className="bg-meme-green-mid text-white text-xs font-bold px-2.5 py-0.5 rounded-full animate-think-pulse">
+              ● LATEST
+            </span>
+          )}
+          <span className="text-xs text-meme-text-light">{ago}</span>
+        </div>
       </div>
 
       {/* Thought content */}
-      <div className="font-mono text-sm md:text-base leading-relaxed space-y-4">
+      <div className="text-sm md:text-base leading-relaxed space-y-4">
         {isLatest ? (
           <TypewriterText
             text={thought.content}
             speed={15}
-            className="text-terminal-green whitespace-pre-wrap"
+            className="text-meme-text-dark whitespace-pre-wrap"
           />
         ) : (
-          <p className="text-terminal-green/80 whitespace-pre-wrap">{thought.content}</p>
+          <p className="text-meme-text-dark/85 whitespace-pre-wrap">{thought.content}</p>
         )}
       </div>
 
@@ -93,12 +114,6 @@ export default function ThoughtCard({ thought, isLatest = false }: ThoughtCardPr
         phrase={thought.meme_phrase}
         cycleNumber={thought.cycle_number}
       />
-
-      {/* Footer */}
-      <div className="mt-6 pt-4 border-t border-terminal-green/10 flex items-center justify-between text-xs font-mono text-terminal-green/30">
-        <span>PHILOSORAPTOR TERMINAL v2.0</span>
-        <span>EOF</span>
-      </div>
     </div>
   );
 }

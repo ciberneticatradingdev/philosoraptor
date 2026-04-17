@@ -25,7 +25,6 @@ export default function Feed() {
       const latest: Thought | null = data.thought;
 
       if (latest && latest.id !== latestId) {
-        // New thought arrived — refresh the feed from the top
         setLatestId(latest.id);
         setPage(1);
 
@@ -106,21 +105,15 @@ export default function Feed() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 gap-4">
-        <div className="text-terminal-green font-mono text-lg animate-pulse-glow">
-          INITIALIZING CONSCIOUSNESS...
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <div className="text-6xl animate-bounce-subtle">🦕</div>
+        <div className="text-meme-green-dark font-bold text-xl">
+          Philosoraptor is thinking...
         </div>
-        <div className="text-terminal-green/40 font-mono text-sm">
-          {'>>> BOOTING PHILOSORAPTOR TERMINAL <<<'}
-        </div>
-        <div className="flex gap-1 mt-4">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="w-2 h-2 bg-terminal-green rounded-full animate-pulse"
-              style={{ animationDelay: `${i * 0.2}s` }}
-            />
-          ))}
+        <div className="thinking-dots flex gap-2 mt-2">
+          <span className="w-3 h-3 bg-meme-green-mid rounded-full inline-block" />
+          <span className="w-3 h-3 bg-meme-green-mid rounded-full inline-block" />
+          <span className="w-3 h-3 bg-meme-green-mid rounded-full inline-block" />
         </div>
       </div>
     );
@@ -128,36 +121,40 @@ export default function Feed() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 gap-4">
-        <div className="text-terminal-red font-mono text-sm">ERROR: {error}</div>
-        <div className="text-terminal-green/40 font-mono text-xs">
-          SYSTEM MALFUNCTION — RETRYING...
-        </div>
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <div className="text-5xl">😵</div>
+        <div className="text-red-600 font-semibold text-lg">{error}</div>
+        <p className="text-meme-text-light text-sm">
+          Even dinosaurs have bad days. Try refreshing.
+        </p>
       </div>
     );
   }
 
   if (thoughts.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 gap-4">
-        <div className="text-terminal-amber font-mono text-lg animate-cursor-blink">
-          AWAITING FIRST TRANSMISSION...
+      <div className="flex flex-col items-center justify-center py-24 gap-4">
+        <div className="text-6xl">🤔</div>
+        <div className="text-meme-green-dark font-bold text-xl">
+          Awaiting first thought...
         </div>
-        <div className="text-terminal-green/40 font-mono text-xs text-center max-w-md">
-          The Philosoraptor is contemplating. First thought arrives in ~5 minutes, or immediately if you have{' '}
-          <code className="text-terminal-amber">CRON_SECRET</code> and hit{' '}
-          <code className="text-terminal-amber">POST /api/generate</code>.
-        </div>
+        <p className="text-meme-text-light text-sm text-center max-w-md">
+          The Philosoraptor is contemplating. First thought arrives in ~5 minutes.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Status bar */}
-      <div className="flex items-center justify-between text-xs font-mono text-terminal-green/40 border-b border-terminal-green/10 pb-3">
-        <span>{thoughts.length} TRANSMISSION{thoughts.length !== 1 ? 'S' : ''} RECEIVED</span>
-        <span className="animate-pulse">POLLING IN {nextRefreshIn}s</span>
+      <div className="flex items-center justify-between text-sm text-meme-text-light px-1">
+        <span className="font-medium">
+          🦕 {thoughts.length} thought{thoughts.length !== 1 ? 's' : ''} so far
+        </span>
+        <span className="text-xs bg-meme-green-light/20 text-meme-green-dark px-3 py-1 rounded-full font-medium">
+          Next check in {nextRefreshIn}s
+        </span>
       </div>
 
       {/* Thought cards */}
@@ -176,22 +173,23 @@ export default function Feed() {
             onClick={loadMore}
             disabled={loadingMore}
             className="
-              font-mono text-sm text-terminal-green/60
-              border border-terminal-green/20 px-6 py-3
-              hover:border-terminal-green/60 hover:text-terminal-green
-              disabled:opacity-30 disabled:cursor-not-allowed
+              font-bold text-sm text-white
+              bg-meme-green-mid hover:bg-meme-green-dark
+              px-8 py-3 rounded-full
+              disabled:opacity-40 disabled:cursor-not-allowed
               transition-all duration-200
-              uppercase tracking-widest
+              shadow-md hover:shadow-lg
+              active:scale-95
             "
           >
-            {loadingMore ? 'LOADING...' : '▼ LOAD PREVIOUS TRANSMISSIONS'}
+            {loadingMore ? '🦕 Loading...' : '🔽 Load older thoughts'}
           </button>
         </div>
       )}
 
       {!hasMore && thoughts.length > 0 && (
-        <div className="text-center font-mono text-terminal-green/20 text-xs py-8">
-          ── END OF TRANSMISSION LOG ──
+        <div className="text-center text-meme-text-light text-sm py-8 italic">
+          🦕 That&apos;s all the thoughts... for now.
         </div>
       )}
     </div>

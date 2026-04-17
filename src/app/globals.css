@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,12 +6,12 @@
 
 /* ─── Base ─────────────────────────────────────────── */
 :root {
-  --green: #00ff41;
-  --green-dim: #00cc33;
-  --amber: #ffb000;
-  --cyan: #00ffff;
-  --red: #ff0040;
-  --bg: #000000;
+  --green-light: #7CB668;
+  --green-mid: #5B8C4A;
+  --green-dark: #3A6B3A;
+  --green-darker: #2E5A2E;
+  --green-bg: #E8F5E9;
+  --text-dark: #1B3A1B;
 }
 
 * {
@@ -23,132 +23,105 @@ html {
 }
 
 body {
-  background-color: var(--bg);
-  color: var(--green);
-  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
-  /* Subtle CRT phosphor tint */
+  /* Subtle diagonal green pattern */
+  background-color: var(--green-bg);
   background-image:
-    radial-gradient(ellipse at center, #001a00 0%, #000000 100%);
+    linear-gradient(135deg, rgba(124, 182, 104, 0.15) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(91, 140, 74, 0.1) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(124, 182, 104, 0.1) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(91, 140, 74, 0.08) 25%, transparent 25%);
+  background-size: 60px 60px;
+  background-position: 0 0, 0 30px, 30px -30px, 30px 0px;
 }
 
-/* ─── CRT Screen effect ─────────────────────────────── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 255, 65, 0.03) 2px,
-    rgba(0, 255, 65, 0.03) 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
+/* ─── Meme quadrant background for hero/header ────── */
+.meme-quadrant-bg {
+  background:
+    conic-gradient(
+      from 0deg at 50% 50%,
+      #7CB668 0deg, #7CB668 90deg,
+      #5B8C4A 90deg, #5B8C4A 180deg,
+      #7CB668 180deg, #7CB668 270deg,
+      #5B8C4A 270deg, #5B8C4A 360deg
+    );
 }
 
 /* ─── Scrollbar ─────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 6px;
-  background: #000;
+  width: 8px;
+  background: #E8F5E9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #00ff4133;
-  border-radius: 3px;
+  background: #7CB668;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #00ff4166;
+  background: #5B8C4A;
 }
 
-/* ─── Text glow utilities ───────────────────────────── */
-.text-glow-green {
-  text-shadow: 0 0 5px var(--green), 0 0 10px var(--green);
-}
-.text-glow-amber {
-  text-shadow: 0 0 5px var(--amber), 0 0 10px var(--amber);
-}
-.text-glow-red {
-  text-shadow: 0 0 5px var(--red), 0 0 10px var(--red);
-}
-
-/* ─── Scanline animation ────────────────────────────── */
-.scanline-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background: linear-gradient(
-    transparent 0%,
-    rgba(0, 255, 65, 0.04) 50%,
-    transparent 100%
-  );
-  animation: scanline-move 8s linear infinite;
-  pointer-events: none;
-  z-index: 9998;
+/* ─── Impact/meme text style ────────────────────────── */
+.meme-text {
+  font-family: Impact, 'Haettenschweiler', 'Arial Narrow Bold', sans-serif;
+  text-transform: uppercase;
+  color: white;
+  text-shadow:
+    -2px -2px 0 #000,
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000,
+    0px -2px 0 #000,
+    0px  2px 0 #000,
+    -2px 0px 0 #000,
+     2px 0px 0 #000;
+  letter-spacing: 0.02em;
 }
 
-@keyframes scanline-move {
-  0%   { transform: translateY(-60px); }
-  100% { transform: translateY(100vh); }
+.meme-text-green {
+  font-family: Impact, 'Haettenschweiler', 'Arial Narrow Bold', sans-serif;
+  text-transform: uppercase;
+  color: #2E5A2E;
+  text-shadow:
+    -1px -1px 0 rgba(255,255,255,0.3),
+     1px  1px 0 rgba(0,0,0,0.15);
+  letter-spacing: 0.02em;
 }
 
-/* ─── Glitch keyframes ──────────────────────────────── */
-@keyframes glitch-clip {
-  0%   { clip-path: inset(0 0 98% 0); }
-  20%  { clip-path: inset(40% 0 40% 0); }
-  40%  { clip-path: inset(70% 0 10% 0); }
-  60%  { clip-path: inset(20% 0 60% 0); }
-  80%  { clip-path: inset(50% 0 30% 0); }
-  100% { clip-path: inset(98% 0 0 0); }
+/* ─── Card hover ────────────────────────────────────── */
+.thought-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* ─── Header glitch layers ──────────────────────────── */
-.glitch-container {
-  position: relative;
+.thought-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(58, 107, 58, 0.2);
 }
 
-.glitch-container::before,
-.glitch-container::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
+/* ─── Philosoraptor thinking dots ────────────────────── */
+.thinking-dots span {
+  animation: thinkDot 1.4s ease-in-out infinite both;
 }
+.thinking-dots span:nth-child(1) { animation-delay: 0s; }
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
 
-.glitch-container:hover::before {
-  opacity: 1;
-  color: var(--cyan);
-  left: 2px;
-  animation: glitch-clip 0.4s steps(1) infinite;
-}
-
-.glitch-container:hover::after {
-  opacity: 1;
-  color: var(--red);
-  left: -2px;
-  animation: glitch-clip 0.4s steps(1) reverse infinite;
-}
-
-/* ─── Terminal prompt cursor ────────────────────────── */
-.terminal-cursor::after {
-  content: '█';
-  animation: blink 1s step-end infinite;
-  color: var(--green);
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+@keyframes thinkDot {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1.2); }
 }
 
 /* ─── Selection ─────────────────────────────────────── */
 ::selection {
-  background: var(--green);
-  color: #000;
+  background: #7CB668;
+  color: white;
+}
+
+/* ─── Meme image frame ──────────────────────────────── */
+.meme-frame {
+  border: 3px solid #3A6B3A;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(58, 107, 58, 0.25);
+  overflow: hidden;
 }

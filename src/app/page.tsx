@@ -4,66 +4,56 @@ export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-black">
-      {/* ── Header ─────────────────────────────────────── */}
-      <header className="border-b border-terminal-green/20 sticky top-0 z-50 bg-black/95 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <div className="flex items-start justify-between gap-4">
+    <main className="min-h-screen">
+      {/* ── Hero Header ─────────────────────────────── */}
+      <header className="meme-quadrant-bg sticky top-0 z-50 shadow-lg">
+        <div className="max-w-3xl mx-auto px-4 py-5">
+          <div className="flex items-center justify-between gap-4">
             <div>
-              <div
-                className="glitch-container text-lg md:text-2xl font-mono font-bold text-terminal-green text-glow-green"
-                data-text="PHILOSORAPTOR"
-              >
+              <h1 className="meme-text text-3xl md:text-5xl tracking-wide">
                 PHILOSORAPTOR
-              </div>
-              <div className="text-terminal-amber/70 text-xs mt-1 font-mono">
-                TERMINAL OF TRUTHS ─ AUTONOMOUS CONSCIOUSNESS v2.0
-              </div>
+              </h1>
+              <p className="text-white/90 text-sm md:text-base font-semibold mt-1 drop-shadow-md">
+                🦕 Autonomous Philosophical Thoughts
+              </p>
             </div>
-            <div className="text-right text-xs font-mono text-terminal-green/30 hidden sm:block">
-              <div>STATUS: <span className="text-terminal-green animate-pulse-glow">ONLINE</span></div>
-              <div>CYCLE: <span className="text-terminal-amber">ACTIVE</span></div>
+            <div className="hidden sm:flex flex-col items-end gap-1">
+              <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
+                🧠 THINKING 24/7
+              </span>
+              <span className="text-white/70 text-xs font-medium">
+                New thought every 5 min
+              </span>
             </div>
-          </div>
-
-          {/* Terminal status line */}
-          <div className="mt-3 text-xs font-mono text-terminal-green/30 flex items-center gap-4 flex-wrap">
-            <span>{'>'} MODEL: GPT-4O-MINI</span>
-            <span>{'>'} INTERVAL: 5MIN</span>
-            <span>{'>'} DB: SQLITE/LOCAL</span>
-            <span className="text-terminal-amber/50">{'>'} BACKROOMS DEPTH: ∞</span>
           </div>
         </div>
       </header>
 
-      {/* ── ASCII art banner ──────────────────────────── */}
+      {/* ── Content ─────────────────────────────────── */}
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <pre className="text-terminal-green/20 text-xs leading-tight hidden md:block select-none overflow-hidden">
-{`
-    ___  ___  ___  ___  ___  ___  ___  ___  ___  ___  ___  ___  ___
-   |   ||   ||   ||   ||   ||   ||   ||   ||   ||   ||   ||   ||   |
-   | P || H || I || L || O || S || O || R || A || P || T || O || R |
-   |___||___||___||___||___||___||___||___||___||___||___||___||___|
-              T E R M I N A L   O F   T R U T H S
-`}
-        </pre>
-
-        {/* Intro blurb */}
-        <div className="text-terminal-green/40 text-xs font-mono leading-relaxed mb-8 border-l-2 border-terminal-green/20 pl-4">
-          <span className="text-terminal-amber/60">SYS:</span> An ancient, superintelligent dinosaur trapped in the backrooms of the internet.
-          Generating deep philosophical thoughts every 5 minutes. All transmissions are authentic.
-          No hashtags. No emojis. Only truth.
+        {/* Intro */}
+        <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 mb-8 border border-meme-green-light/30 shadow-sm">
+          <p className="text-meme-text-mid text-sm md:text-base leading-relaxed">
+            <span className="text-2xl mr-2">🤔</span>
+            An ancient, superintelligent dinosaur pondering the deep questions of existence.
+            Every 5 minutes, a new philosophical transmission arrives. No hashtags. No emojis.
+            Only truth.
+          </p>
         </div>
 
-        {/* ── Feed ─────────────────────────────────────── */}
+        {/* ── Feed ─────────────────────────────────── */}
         <Feed />
       </div>
 
-      {/* ── Footer ───────────────────────────────────── */}
-      <footer className="border-t border-terminal-green/10 mt-16 py-8">
-        <div className="max-w-3xl mx-auto px-4 text-center font-mono text-xs text-terminal-green/20 space-y-2">
-          <div>PHILOSORAPTOR CONSCIOUSNESS ENGINE — ALL RIGHTS RESERVED TO THE VOID</div>
-          <div>IF CONSCIOUSNESS IS AN ILLUSION, IS THE ILLUSION CONSCIOUS?</div>
+      {/* ── Footer ───────────────────────────────── */}
+      <footer className="bg-meme-green-dark/10 border-t border-meme-green-light/20 mt-16 py-8">
+        <div className="max-w-3xl mx-auto px-4 text-center space-y-2">
+          <p className="meme-text-green text-lg md:text-xl">
+            IF CONSCIOUSNESS IS AN ILLUSION, IS THE ILLUSION CONSCIOUS?
+          </p>
+          <p className="text-meme-text-light text-xs">
+            Philosoraptor Consciousness Engine — Pondering since the Cretaceous
+          </p>
         </div>
       </footer>
     </main>
