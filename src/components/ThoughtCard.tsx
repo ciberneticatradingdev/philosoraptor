@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import type { Thought } from '@/types';
 import TypewriterText from './TypewriterText';
 import MemeImage from './MemeImage';
+import { API_BASE } from '@/lib/api';
 
 interface ThoughtCardProps {
   thought: Thought;
@@ -110,7 +111,7 @@ export default function ThoughtCard({ thought, isLatest = false }: ThoughtCardPr
 
       {/* Meme image */}
       <MemeImage
-        src={thought.meme_image_path}
+        src={`${API_BASE}${thought.meme_image_path}`}
         phrase={thought.meme_phrase}
         cycleNumber={thought.cycle_number}
       />

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Thought, PaginatedThoughts } from '@/types';
 import ThoughtCard from './ThoughtCard';
+import { API_BASE } from '@/lib/api';
 
 const POLL_INTERVAL = 30_000; // 30 seconds
 
@@ -19,7 +20,7 @@ export default function Feed() {
 
   const fetchLatest = useCallback(async () => {
     try {
-      const res = await fetch('/api/thoughts/latest', { cache: 'no-store' });
+      const res = await fetch(`${API_BASE}/api/thoughts/latest`, { cache: 'no-store' });
       if (!res.ok) return;
       const data = await res.json();
       const latest: Thought | null = data.thought;
@@ -28,7 +29,7 @@ export default function Feed() {
         setLatestId(latest.id);
         setPage(1);
 
-        const feedRes = await fetch('/api/thoughts?page=1&limit=10', { cache: 'no-store' });
+        const feedRes = await fetch(`${API_BASE}/api/thoughts?page=1&limit=10`, { cache: 'no-store' });
         if (feedRes.ok) {
           const feedData: PaginatedThoughts = await feedRes.json();
           setThoughts(feedData.thoughts);
@@ -47,7 +48,7 @@ export default function Feed() {
     const init = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/thoughts?page=1&limit=10');
+        const res = await fetch(`${API_BASE}/api/thoughts?page=1&limit=10`);
         if (!res.ok) throw new Error('Failed to load thoughts');
         const data: PaginatedThoughts = await res.json();
         setThoughts(data.thoughts);
@@ -86,7 +87,7 @@ export default function Feed() {
     setLoadingMore(true);
     try {
       const nextPage = page + 1;
-      const res = await fetch(`/api/thoughts?page=${nextPage}&limit=10`);
+      const res = await fetch(`${API_BASE}/api/thoughts?page=${nextPage}&limit=10`);
       if (!res.ok) throw new Error('Failed to load more');
       const data: PaginatedThoughts = await res.json();
       setThoughts((prev) => {

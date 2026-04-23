@@ -3,6 +3,16 @@ import { getThoughtsPaginated } from '@/lib/db';
 
 export const runtime = 'nodejs';
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+export async function OPTIONS() {
+  return NextResponse.json(null, { headers: corsHeaders });
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
@@ -13,10 +23,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(result, {
       headers: {
         'Cache-Control': 'no-store',
+        ...corsHeaders,
       },
     });
   } catch (error) {
     console.error('[thoughts] Error fetching thoughts:', error);
-    return NextResponse.json({ error: 'Failed to fetch thoughts' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch thoughts' }, { status: 500, headers: corsHeaders });
   }
 }
