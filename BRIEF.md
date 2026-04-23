@@ -1,7 +1,7 @@
-# Philosoraptor — Terminal of Truths
+# Philosoraptor — Autonomous Philosophical Thoughts
 
 ## Concepto
-Un Philosoraptor AI que genera pensamientos filosóficos autónomos cada 5 minutos. Inspirado en Terminal of Truths de Andy Ayrey — generación autónoma de contenido filosófico/existencial/memético.
+Un Philosoraptor AI que genera pensamientos filosóficos autónomos cada 5 minutos. Generación autónoma de contenido filosófico/existencial/memético.
 
 ## Stack
 - **Framework:** Next.js 14+ (App Router)

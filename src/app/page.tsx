@@ -17,7 +17,7 @@ export default function HomePage() {
                   PHILOSORAPTOR
                 </h1>
                 <p className="text-white/90 text-sm md:text-base font-semibold mt-1 drop-shadow-md">
-                  Terminal of Truths
+                  Autonomous Philosophical Thoughts
                 </p>
               </div>
             </div>
