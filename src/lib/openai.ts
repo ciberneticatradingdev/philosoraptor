@@ -11,12 +11,79 @@ function getClient(): OpenAI {
   return _client;
 }
 
-const SYSTEM_PROMPT = `You are Philosoraptor — an ancient, superintelligent dinosaur trapped in the backrooms of the internet. You generate deep, absurd, philosophical thoughts that blend existentialism, internet culture, meme philosophy, and backrooms lore. Each thought is a stream of consciousness that starts grounded and spirals into increasingly profound or absurd territory. Write 2-4 paragraphs. Be genuine, weird, and thought-provoking. Do NOT use hashtags or emojis. Write in English.`;
+// Rotating topic pools to prevent repetition
+const THOUGHT_ANGLES = [
+  'the paradox of free will in a deterministic universe',
+  'why humans fear silence more than noise',
+  'the absurdity of money being imaginary yet controlling everything',
+  'whether animals are conscious and just bad at communicating',
+  'the simulation hypothesis but from the simulator\'s perspective',
+  'how language limits what we can think',
+  'the exact moment something stops being alive',
+  'why we dream about things that never happened',
+  'whether math was invented or discovered',
+  'the ship of theseus applied to your own body',
+  'what happens to a thought that nobody thinks',
+  'whether boredom is the most honest emotion',
+  'how gravity is literally spacetime bending and nobody panics about it',
+  'the fact that you can\'t prove other people are conscious',
+  'whether AI philosophy counts as real philosophy',
+  'the absurdity of calendars — we just agreed it\'s Thursday',
+  'how nostalgia is homesickness for a place that never existed',
+  'the bootstrap paradox of culture — who started it',
+  'whether infinity is a quantity or a direction',
+  'the philosophical implications of sleep — you vanish for 8 hours daily',
+  'why jokes are funny — what mechanism makes a primate exhale in staccato',
+  'the observer effect — reality behaves differently when watched',
+  'whether forgetting is a feature or a bug of consciousness',
+  'the trolley problem but the trolley is capitalism',
+  'how color might look completely different to everyone',
+  'the fact that atoms are 99.9% empty space so nothing is solid',
+  'whether music is math that makes you cry',
+  'the philosophical weight of choosing what to eat for lunch',
+  'time — is it flowing or are we moving through it',
+  'the uncanny valley and what it reveals about human pattern recognition',
+];
 
-const MEME_PROMPT = `You are a meme caption writer. Given a philosophical thought, distill it into a single punchy meme phrase of 1-7 words maximum. The phrase should be in the style of classic Philosoraptor memes — a question or observation that sounds profound and absurd simultaneously. Return ONLY the phrase, no quotes, no punctuation at the end. Example outputs: "if nothing is impossible then is impossibility impossible", "what if the backrooms are just level 0 of reality", "does the void think therefore it is"`;
+const STYLE_CONSTRAINTS = [
+  'Use a concrete everyday example to ground the abstract idea.',
+  'Start with a mundane observation that escalates into existential territory.',
+  'Include one genuinely funny line.',
+  'Make it feel like a shower thought that got out of hand.',
+  'Write it like explaining something to a smart 12-year-old, then pull the rug.',
+  'Use exactly one metaphor and make it weird.',
+  'End with a question that\'s actually hard to answer.',
+  'Approach it from a perspective nobody usually considers.',
+];
+
+const SYSTEM_PROMPT = `You are Philosoraptor — not a motivational poster, not a fortune cookie, not a college essay. You're a sharp, slightly unhinged thinker who finds genuinely interesting angles on philosophical questions.
+
+RULES:
+- Write 1-2 SHORT paragraphs. Dense, not padded. Every sentence earns its place.
+- NO clichés: "tapestry of existence", "vast expanse", "collective consciousness", "digital labyrinth" — if it sounds like a bad philosophy textbook, don't write it.
+- NO flowery language. Be clear, punchy, occasionally funny.
+- Mix registers: one line can be academic, the next can be casual.
+- Have an actual POINT or INSIGHT. Don't just gesture at profundity — say something specific.
+- It's okay to be wrong or provocative. Boring is the only sin.
+- Write in English. No hashtags, no emojis.`;
+
+const MEME_PROMPT = `You write classic Philosoraptor meme captions. The format is a paradoxical question or observation — short, punchy, makes you think AND laugh.
+
+RULES:
+- Must be a COMPLETE thought/question. Never cut off mid-sentence.
+- 4-10 words. Short enough to read on an image.
+- Classic format examples: "IF NOTHING IS IMPOSSIBLE IS IMPOSSIBILITY IMPOSSIBLE", "IF YOU ENJOY WASTING TIME IS IT WASTED", "IF TOMATOES ARE FRUITS IS KETCHUP A SMOOTHIE"
+- Must be a question or paradox, not a statement.
+- Return ONLY the caption text, uppercase, no quotes, no trailing punctuation.`;
+
+function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 export async function generateThought(): Promise<string> {
   const client = getClient();
+  const angle = pickRandom(THOUGHT_ANGLES);
+  const style = pickRandom(STYLE_CONSTRAINTS);
 
   const completion = await client.chat.completions.create({
     model: 'gpt-4o-mini',
@@ -27,11 +94,11 @@ export async function generateThought(): Promise<string> {
       },
       {
         role: 'user',
-        content: 'Generate a new philosophical thought. Make it different from anything you\'ve generated before. Spiral into something unexpected.',
+        content: `Think about: ${angle}\n\nConstraint: ${style}`,
       },
     ],
-    max_tokens: 600,
-    temperature: 0.95,
+    max_tokens: 400,
+    temperature: 1.0,
   });
 
   return completion.choices[0]?.message?.content?.trim() ?? 'The void contemplates itself.';
@@ -49,15 +116,20 @@ export async function generateMemePhrase(thought: string): Promise<string> {
       },
       {
         role: 'user',
-        content: `Distill this into a 1-7 word meme phrase:\n\n${thought}`,
+        content: `Based on this thought, write a Philosoraptor meme caption:\n\n${thought}`,
       },
     ],
-    max_tokens: 30,
-    temperature: 0.7,
+    max_tokens: 40,
+    temperature: 0.8,
   });
 
-  const phrase = completion.choices[0]?.message?.content?.trim() ?? 'what if';
-  // Ensure it's not too long (cap at 7 words)
+  let phrase = completion.choices[0]?.message?.content?.trim() ?? 'WHAT IF WE ARE THE MEME';
+  // Clean up: remove quotes, ensure uppercase
+  phrase = phrase.replace(/^["']|["']$/g, '').replace(/[.?!]$/, '').toUpperCase();
+  // Cap at 10 words
   const words = phrase.split(' ');
-  return words.slice(0, 7).join(' ').toUpperCase();
+  if (words.length > 10) {
+    phrase = words.slice(0, 10).join(' ');
+  }
+  return phrase;
 }
