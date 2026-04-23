@@ -6,7 +6,8 @@ export function startCron() {
   if (cronStarted) return;
   cronStarted = true;
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const port = process.env.PORT || '3000';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:${port}`;
   const cronSecret = process.env.CRON_SECRET;
 
   if (!cronSecret) {
@@ -57,5 +58,5 @@ export function startCron() {
     } catch (err) {
       console.error('[cron] Startup generation error:', err);
     }
-  }, 5000);
+  }, 10000);
 }
