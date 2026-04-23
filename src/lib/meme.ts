@@ -80,7 +80,7 @@ export async function generateMemeImage(phrase: string, cycleNumber: number): Pr
 
   const outputFilename = `cycle_${String(cycleNumber).padStart(4, '0')}.png`;
   const outputPath = path.join(MEMES_DIR, outputFilename);
-  const publicPath = `/memes/${outputFilename}`;
+  const publicPath = `/api/memes/${outputFilename}`;
 
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
