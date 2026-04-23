@@ -81,7 +81,7 @@ export default function ThoughtCard({ thought, isLatest = false }: ThoughtCardPr
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-xl">🦕</span>
+          <img src="/logo.png" alt="" className="w-6 h-6 rounded" />
           <span className="text-sm font-semibold text-meme-green-dark">
             {timestamp}
           </span>

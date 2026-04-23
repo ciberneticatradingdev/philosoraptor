@@ -107,7 +107,7 @@ export default function Feed() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <div className="text-6xl animate-bounce-subtle">🦕</div>
+        <img src="/logo.png" alt="Philosoraptor" className="w-16 h-16 animate-bounce-subtle" />
         <div className="text-meme-green-dark font-bold text-xl">
           Philosoraptor is thinking...
         </div>
@@ -135,7 +135,7 @@ export default function Feed() {
   if (thoughts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <div className="text-6xl">🤔</div>
+        <img src="/logo.png" alt="Philosoraptor" className="w-16 h-16" />
         <div className="text-meme-green-dark font-bold text-xl">
           Awaiting first thought...
         </div>
@@ -151,7 +151,7 @@ export default function Feed() {
       {/* Status bar */}
       <div className="flex items-center justify-between text-sm text-meme-text-light px-1">
         <span className="font-medium">
-          🦕 {thoughts.length} thought{thoughts.length !== 1 ? 's' : ''} so far
+          {thoughts.length} thought{thoughts.length !== 1 ? 's' : ''} so far
         </span>
         <span className="text-xs bg-meme-green-light/20 text-meme-green-dark px-3 py-1 rounded-full font-medium">
           Next check in {nextRefreshIn}s
@@ -190,7 +190,7 @@ export default function Feed() {
 
       {!hasMore && thoughts.length > 0 && (
         <div className="text-center text-meme-text-light text-sm py-8 italic">
-          🦕 That&apos;s all the thoughts... for now.
+          That&apos;s all the thoughts... for now.
         </div>
       )}
     </div>
