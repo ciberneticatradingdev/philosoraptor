@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 
-const TEMPLATE_PATH = path.join(process.cwd(), 'public', 'philosoraptor-template.jpg');
+const TEMPLATE_PATH = path.join(process.cwd(), 'public', 'philosoraptor-template.png');
 const MEMES_DIR = path.join(process.cwd(), 'public', 'memes');
 
 function ensureMemesDir() {
