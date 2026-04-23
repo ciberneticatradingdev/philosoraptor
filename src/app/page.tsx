@@ -38,8 +38,8 @@ export default function HomePage() {
         {/* Contract Address */}
         <div className="bg-meme-green-dark/5 backdrop-blur-sm rounded-xl p-4 mb-8 border border-meme-green-mid/30 shadow-sm text-center">
           <span className="text-xs font-semibold text-meme-green-dark/60 uppercase tracking-widest">Contract Address</span>
-          <p className="text-meme-green-dark font-bold text-sm md:text-base mt-1 tracking-wide">
-            CA WILL UPDATE SOON
+          <p className="text-meme-green-dark font-bold text-xs md:text-sm mt-1 tracking-wide font-mono break-all select-all">
+            26s2aYqxAJ3JFeHqqV8i94m8EkH4XzCakMTaYbPQpump
           </p>
         </div>
 
