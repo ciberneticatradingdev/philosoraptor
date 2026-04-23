@@ -29,18 +29,50 @@ export async function GET(
 
   const filePath = path.join(MEMES_DIR, filename);
 
-  if (!fs.existsSync(filePath)) {
-    return NextResponse.json({ error: 'Meme not found' }, { status: 404, headers: corsHeaders });
+  // If file exists on disk, serve it
+  if (fs.existsSync(filePath)) {
+    const buffer = fs.readFileSync(filePath);
+    return new NextResponse(buffer, {
+      status: 200,
+      headers: {
+        'Content-Type': 'image/png',
+        'Cache-Control': 'public, max-age=31536000, immutable',
+        ...corsHeaders,
+      },
+    });
   }
 
-  const buffer = fs.readFileSync(filePath);
+  // File doesn't exist — try to regenerate from DB data
+  try {
+    const { getThoughtByCycle } = await import('@/lib/db');
+    const { generateMemeImage } = await import('@/lib/meme');
 
-  return new NextResponse(buffer, {
-    status: 200,
-    headers: {
-      'Content-Type': 'image/png',
-      'Cache-Control': 'public, max-age=31536000, immutable',
-      ...corsHeaders,
-    },
-  });
+    const cycleStr = filename.replace('cycle_', '').replace('.png', '');
+    const cycleNumber = parseInt(cycleStr, 10);
+
+    const thought = getThoughtByCycle(cycleNumber);
+    if (!thought) {
+      return NextResponse.json({ error: 'Meme not found' }, { status: 404, headers: corsHeaders });
+    }
+
+    // Regenerate the meme image
+    await generateMemeImage(thought.meme_phrase, cycleNumber);
+
+    // Now serve it
+    if (fs.existsSync(filePath)) {
+      const buffer = fs.readFileSync(filePath);
+      return new NextResponse(buffer, {
+        status: 200,
+        headers: {
+          'Content-Type': 'image/png',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+          ...corsHeaders,
+        },
+      });
+    }
+  } catch (err) {
+    console.error('[memes] Regeneration failed:', err);
+  }
+
+  return NextResponse.json({ error: 'Meme not found' }, { status: 404, headers: corsHeaders });
 }

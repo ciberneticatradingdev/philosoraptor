@@ -65,6 +65,12 @@ export function getThoughtById(id: number): Thought | null {
   return (row as unknown as Thought) ?? null;
 }
 
+export function getThoughtByCycle(cycleNumber: number): Thought | null {
+  const db = getDb();
+  const row = db.prepare('SELECT * FROM thoughts WHERE cycle_number = ?').get(cycleNumber);
+  return (row as unknown as Thought) ?? null;
+}
+
 export function getLatestThought(): Thought | null {
   const db = getDb();
   const row = db.prepare('SELECT * FROM thoughts ORDER BY created_at DESC LIMIT 1').get();
