@@ -35,6 +35,14 @@ export default function HomePage() {
 
       {/* ── Content ─────────────────────────────────── */}
       <div className="max-w-3xl mx-auto px-4 py-8">
+        {/* Contract Address */}
+        <div className="bg-meme-green-dark/5 backdrop-blur-sm rounded-xl p-4 mb-8 border border-meme-green-mid/30 shadow-sm text-center">
+          <span className="text-xs font-semibold text-meme-green-dark/60 uppercase tracking-widest">Contract Address</span>
+          <p className="text-meme-green-dark font-bold text-sm md:text-base mt-1 tracking-wide">
+            CA WILL UPDATE SOON
+          </p>
+        </div>
+
         {/* Intro */}
         <div className="bg-white/70 backdrop-blur-sm rounded-xl p-5 mb-8 border border-meme-green-light/30 shadow-sm">
           <p className="text-meme-text-mid text-sm md:text-base leading-relaxed">
