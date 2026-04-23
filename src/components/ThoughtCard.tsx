@@ -111,7 +111,7 @@ export default function ThoughtCard({ thought, isLatest = false }: ThoughtCardPr
 
       {/* Meme image */}
       <MemeImage
-        src={`${API_BASE}${thought.meme_image_path}`}
+        src={`${API_BASE}${thought.meme_image_path.startsWith('/api/memes/') ? thought.meme_image_path : thought.meme_image_path.replace('/memes/', '/api/memes/')}`}
         phrase={thought.meme_phrase}
         cycleNumber={thought.cycle_number}
       />
