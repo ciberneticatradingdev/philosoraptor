@@ -1,62 +1,52 @@
 import cron from 'node-cron';
+import { getLatestCycleNumber, insertThought } from './db';
+import { generateThought, generateMemePhrase } from './openai';
+import { generateMemeImage } from './meme';
 
 let cronStarted = false;
+
+async function runGeneration(label: string) {
+  try {
+    const lastCycle = getLatestCycleNumber();
+    const cycleNumber = lastCycle + 1;
+
+    console.log(`[cron] ${label} — cycle ${cycleNumber}, generating thought...`);
+
+    const content = await generateThought();
+    console.log(`[cron] Thought generated (${content.length} chars)`);
+
+    const memePhrase = await generateMemePhrase(content);
+    console.log(`[cron] Meme phrase: "${memePhrase}"`);
+
+    const memeImagePath = await generateMemeImage(memePhrase, cycleNumber);
+    console.log(`[cron] Meme image saved: ${memeImagePath}`);
+
+    const thought = insertThought({
+      cycle_number: cycleNumber,
+      content,
+      meme_phrase: memePhrase,
+      meme_image_path: memeImagePath,
+    });
+
+    console.log(`[cron] Cycle ${cycleNumber} complete — thought ID ${thought.id}`);
+  } catch (err) {
+    console.error(`[cron] ${label} error:`, err);
+  }
+}
 
 export function startCron() {
   if (cronStarted) return;
   cronStarted = true;
 
-  const port = process.env.PORT || '3000';
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:${port}`;
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    console.warn('[cron] CRON_SECRET not set — /api/generate will be unprotected. Set CRON_SECRET in .env.local');
-  }
-
   console.log('[cron] Starting Philosoraptor thought generation cron (every 5 minutes)');
 
-  // Run every 5 minutes
-  cron.schedule('*/5 * * * *', async () => {
-    console.log(`[cron] ${new Date().toISOString()} — triggering thought generation`);
-    try {
-      const res = await fetch(`${baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(cronSecret ? { 'x-cron-secret': cronSecret } : {}),
-        },
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        console.error(`[cron] Generation failed (${res.status}):`, text);
-      } else {
-        const data = await res.json();
-        console.log(`[cron] Generated thought cycle_${String(data.thought?.cycle_number ?? '???').padStart(4, '0')}`);
-      }
-    } catch (err) {
-      console.error('[cron] Error calling /api/generate:', err);
-    }
+  // Run every 5 minutes — call generation logic directly (no HTTP fetch)
+  cron.schedule('*/5 * * * *', () => {
+    runGeneration(new Date().toISOString());
   });
 
-  // Also trigger once on startup after a short delay (so DB and server are ready)
-  setTimeout(async () => {
-    console.log('[cron] Initial thought generation on startup...');
-    try {
-      const res = await fetch(`${baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(cronSecret ? { 'x-cron-secret': cronSecret } : {}),
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        console.log(`[cron] Startup thought generated: cycle_${String(data.thought?.cycle_number ?? '???').padStart(4, '0')}`);
-      }
-    } catch (err) {
-      console.error('[cron] Startup generation error:', err);
-    }
-  }, 10000);
+  // Trigger once on startup after a short delay
+  setTimeout(() => {
+    runGeneration('startup');
+  }, 5000);
 }
