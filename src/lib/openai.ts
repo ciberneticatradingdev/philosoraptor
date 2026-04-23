@@ -67,14 +67,15 @@ RULES:
 - It's okay to be wrong or provocative. Boring is the only sin.
 - Write in English. No hashtags, no emojis.`;
 
-const MEME_PROMPT = `You write classic Philosoraptor meme captions. The format is a paradoxical question or observation — short, punchy, makes you think AND laugh.
+const MEME_PROMPT = `You write classic Philosoraptor meme captions. The format is a paradoxical question directly related to the philosophical thought provided.
 
 RULES:
-- Must be a COMPLETE thought/question. Never cut off mid-sentence.
-- 4-10 words. Short enough to read on an image.
-- Classic format examples: "IF NOTHING IS IMPOSSIBLE IS IMPOSSIBILITY IMPOSSIBLE", "IF YOU ENJOY WASTING TIME IS IT WASTED", "IF TOMATOES ARE FRUITS IS KETCHUP A SMOOTHIE"
-- Must be a question or paradox, not a statement.
-- Return ONLY the caption text, uppercase, no quotes, no trailing punctuation.`;
+- The caption MUST directly relate to the core idea of the thought. It should feel like the TL;DR question version of the text.
+- Must be a COMPLETE sentence. NEVER cut off mid-thought. If "IF X THEN Y" — both X and Y must be there.
+- 5-12 words. Short enough for a meme image but complete.
+- Format: "IF [setup] [punchline/paradox]" or "WHAT IF [paradox]" or a direct paradoxical question.
+- Examples: "IF NOTHING IS IMPOSSIBLE IS IMPOSSIBILITY IMPOSSIBLE", "IF YOU ENJOY WASTING TIME IS IT WASTED", "IF TOMATOES ARE FRUITS IS KETCHUP A SMOOTHIE", "DO STAIRS GO UP OR DO WE GO UP"
+- Return ONLY the caption text, uppercase, no quotes, no punctuation at the end.`;
 
 function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -116,20 +117,15 @@ export async function generateMemePhrase(thought: string): Promise<string> {
       },
       {
         role: 'user',
-        content: `Based on this thought, write a Philosoraptor meme caption:\n\n${thought}`,
+        content: `Here is the philosophical thought. Write a single Philosoraptor meme caption that captures its CORE idea as a paradoxical question:\n\n${thought}`,
       },
     ],
-    max_tokens: 40,
+    max_tokens: 60,
     temperature: 0.8,
   });
 
-  let phrase = completion.choices[0]?.message?.content?.trim() ?? 'WHAT IF WE ARE THE MEME';
-  // Clean up: remove quotes, ensure uppercase
-  phrase = phrase.replace(/^["']|["']$/g, '').replace(/[.?!]$/, '').toUpperCase();
-  // Cap at 10 words
-  const words = phrase.split(' ');
-  if (words.length > 10) {
-    phrase = words.slice(0, 10).join(' ');
-  }
+  let phrase = completion.choices[0]?.message?.content?.trim() ?? 'WHAT IF THINKING IS JUST BRAIN MEMES';
+  // Clean up: remove quotes, ensure uppercase, remove trailing punctuation
+  phrase = phrase.replace(/^["']|["']$/g, '').replace(/[.?!]+$/, '').toUpperCase();
   return phrase;
 }

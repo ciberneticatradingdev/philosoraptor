@@ -5,7 +5,9 @@ import path from 'path';
 import fs from 'fs';
 import type { Thought, PaginatedThoughts } from '@/types';
 
-const DB_DIR = path.join(process.cwd(), 'data');
+// Use RAILWAY_VOLUME_MOUNT_PATH if available (persistent storage), fallback to local
+const PERSIST_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || path.join(process.cwd(), 'data');
+const DB_DIR = path.join(PERSIST_DIR, 'db');
 const DB_PATH = path.join(DB_DIR, 'thoughts.db');
 
 let _db: DatabaseSync | null = null;

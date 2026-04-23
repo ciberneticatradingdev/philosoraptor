@@ -4,7 +4,10 @@ import fs from 'fs';
 
 export const runtime = 'nodejs';
 
-const MEMES_DIR = path.join(process.cwd(), 'public', 'memes');
+const PERSIST_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH;
+const MEMES_DIR = PERSIST_DIR
+  ? path.join(PERSIST_DIR, 'memes')
+  : path.join(process.cwd(), 'public', 'memes');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',

@@ -2,7 +2,11 @@ import path from 'path';
 import fs from 'fs';
 
 const TEMPLATE_PATH = path.join(process.cwd(), 'public', 'philosoraptor-template.png');
-const MEMES_DIR = path.join(process.cwd(), 'public', 'memes');
+// Use RAILWAY_VOLUME_MOUNT_PATH if available (persistent storage), fallback to public/memes
+const PERSIST_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH;
+const MEMES_DIR = PERSIST_DIR
+  ? path.join(PERSIST_DIR, 'memes')
+  : path.join(process.cwd(), 'public', 'memes');
 
 function ensureMemesDir() {
   if (!fs.existsSync(MEMES_DIR)) {
